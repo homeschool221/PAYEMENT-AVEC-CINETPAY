@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.cinetpay.com/seamless/main.js" type="text/javascript"></script>
+  <title>Formulaire de Paiement</title>
+  <link rel="stylesheet" href="style.css">
+  <script>
+    function checkout(){
+        CinetPay.setConfig({
+    apikey: '591901675674347496cb0a6.46097445',
+    site_id: 5883659,
+    notify_url: 'http://127.0.0.1:5500/index.html',
+     mode: 'PRODUCTION'
+});
+
+CinetPay.getCheckout({
+    transaction_id: Math.floor(Math.random() * 100000000).toString(),
+    amount: 1000,
+    currency: 'XOF',
+    channels: 'ALL',
+    description: 'YOUR_PAYMENT_DESCRIPTION',
+    //Fournir ces variables obligatoirement pour le paiements par carte bancaire
+    customer_name:"Joe",//Le nom du client
+    customer_surname:"Down",//Le prenom du client
+    customer_email: "down@test.com",//l'email du client
+    customer_phone_number: "088767611",//l'email du client
+    customer_address : "BP 0024",//addresse du client
+    customer_city: "Antananarivo",// La ville du client
+    customer_country : "CM",// le code ISO du pays
+    customer_state : "CM",// le code ISO l'état
+    customer_zip_code : "06510", // code postal
+});
+CinetPay.waitResponse(function(data) {
+         // En cas d'échec
+          if (data.status == "REFUSED") {
+              if (alert("Votre paiement a échoué")) {
+                  window.location.reload();
+              }
+          }
+          // En cas de succès
+          else if (data.status == "ACCEPTED") {
+              if (alert("Votre paiement a été effectué avec succès")) {
+                  // correct, on delivre le service
+                  window.location.reload();
+              }
+          }
+   });
+   CinetPay.onError(function(data) {
+                console.log(data);
+            });
+
+
+    }
+
+  </script>
+</head>
+<body>
+  <div class="payment-form">
+    <h1>Formulaire de Paiement</h1>
+    <form action="submit_payment.php" method="post">
+      <div class="form-group">
+        <label for="firstName">Prénom</label>
+        <input type="text" id="firstName" name="firstName" placeholder="Entrez votre prénom" required>
+      </div>
+
+      <div class="form-group">
+        <label for="lastName">Nom</label>
+        <input type="text" id="lastName" name="lastName" placeholder="Entrez votre nom" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Adresse Email</label>
+        <input type="email" id="email" name="email" placeholder="exemple@domaine.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Numéro de Téléphone</label>
+        <input type="tel" id="phone" name="phone" placeholder="77XXXXXXX" required>
+      </div>
+
+      <button onclick="checkout()" type="submit" class="btn-submit">Payer</button>
+    </form>
+  </div>
+</body>
+</html>
